@@ -1,0 +1,59 @@
+import random
+
+# Create the initial board with two random tiles
+board = [[0] * 4 for i in range(4)]
+for i in range(2):
+    x, y = random.randint(0, 3), random.randint(0, 3)
+    board[x][y] = 2
+
+# Define a function to print the board
+def print_board(board):
+    print("\n".join(["\t".join([str(cell) for cell in row]) for row in board]))
+
+# Define a function to check if the game is over
+def is_game_over(board):
+    for row in board:
+        if 0 in row:
+            return False
+    for i in range(4):
+        for j in range(3):
+            if board[i][j] == board[i][j+1] or board[j][i] == board[j+1][i]:
+                return False
+    return True
+
+# Define a function to move the tiles
+def move(board, direction):
+    for i in range(4):
+        row = board[i]
+        if direction == "left":
+            row = [cell for cell in row if cell != 0] + [0] * row.count(0)
+        elif direction == "right":
+            row = [0] * row.count(0) + [cell for cell in row if cell != 0]
+        board[i] = row
+    for i in range(3):
+        for j in range(4):
+            if direction == "up":
+                if board[i][j] == board[i+1][j]:
+                    board[i][j] *= 2
+                    board[i+1][j] = 0
+            elif direction == "down":
+                if board[3-i][j] == board[2-i][j]:
+                    board[3-i][j] *= 2
+                    board[2-i][j] = 0
+    for i in range(4):
+        row = board[i]
+        if direction == "left":
+            row = [cell for cell in row if cell != 0] + [0] * row.count(0)
+        elif direction == "right":
+            row = [0] * row.count(0) + [cell for cell in row if cell != 0]
+        board[i] = row
+
+# Start the game loop
+while not is_game_over(board):
+    print_board(board)
+    direction = input("Enter direction (up/down/left/right): ")
+    move(board, direction)
+
+# The game is over, print the final board
+print_board(board)
+print("Game over!")
